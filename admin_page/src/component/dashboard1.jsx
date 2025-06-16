@@ -25,12 +25,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Dashboard1(){
 
     const [studentsCount, setStudentsCount] = useState();
     const [totalRooms,setTotalRooms] = useState([]);
     const [occupiedRooms,setOccupiedRooms] = useState([]);
+    const navigate = useNavigate();
+    const [complaints, setComplaints] = useState([]);
 
   const roomTypes = [
     {
@@ -54,14 +58,6 @@ function Dashboard1(){
   ];
 
   
-
-  const maintenanceRequests = [
-    { issue: "Broken shower head", room: "203", status: "Pending" },
-    { issue: "Faulty air conditioner", room: "118", status: "In Progress" },
-    { issue: "Leaking faucet", room: "305", status: "Completed" },
-    { issue: "Clogged toilet", room: "422", status: "Pending" },
-    { issue: "Electrical outlet not working", room: "107", status: "In Progress" },
-  ]
 
   useEffect(()=>{
     async function countStudent() {
@@ -95,6 +91,40 @@ function Dashboard1(){
 
   },[]);
 
+  
+
+
+  useEffect(() => {
+    async function fetchComplaint() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/admin_complaint"
+        );
+
+        setComplaints(
+          response.data.map((c) => ({
+            id: c.id,
+            usn: c.usn,
+            title: c.title,
+            room: c.room_no,
+            student: c.student_name,
+            date: new Date(c.date).toISOString().slice(0, 10), // converts to 'YYYY-MM-DD'
+            status: c.status,
+            category: c.category,
+            description: c.description,
+          }))
+        );
+      } catch (error) {
+        alert("Error in Fetching data: " + error.response.data.message);
+      }
+    }
+
+    fetchComplaint();
+  }, []);
+
+  console.log(complaints)
+  
+
     return(
         <>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -115,8 +145,8 @@ function Dashboard1(){
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">87%</div>
-                  <Progress value={87} className="mt-2" />
+                  <div className="text-2xl font-bold">50%</div>
+                  <Progress value={50} className="mt-2" />
                 </CardContent>
               </Card>
               <Card>
@@ -171,7 +201,7 @@ function Dashboard1(){
                   </div>
                 </CardContent>
                 <CardFooter className="">
-                  <Button className="w-full cursor-pointer" variant="outline">
+                  <Button className="w-full cursor-pointer" variant="outline" >
                     Manage Rooms
                   </Button>
                 </CardFooter>
@@ -184,23 +214,23 @@ function Dashboard1(){
                 </CardHeader>
                 <CardContent>
                 <div className="space-y-4">
-                    {maintenanceRequests.map((request, index) => (
+                    {complaints.slice(0,5).map((request, index) => (
                       <div key={index} className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-2">
                           <Wrench className="mt-0.5 h-4 w-4 text-muted-foreground" />
                           <div>
-                            <p className="text-sm font-medium">{request.issue}</p>
+                            <p className="text-sm font-medium">{request.title}</p>
                             <p className="text-xs text-muted-foreground">Room {request.room}</p>
                           </div>
                         </div>
-                        <Badge variant={request.status === "Pending"?"outline":"default"} >{request.status}</Badge>
+                        <Badge variant={request.status === "Completed"?"default":"outline"} >{request.status}</Badge>
                       </div>
                     ))}
                   </div>
                   </CardContent>
                 <CardFooter>
-                  <Button variant="outline" className="w-full">
-                    More
+                  <Button variant="outline" className="w-full cursor-pointer" onClick={() => navigate("maintenance")} >
+                    Manage Maintenance
                   </Button>
                 </CardFooter>
               </Card>

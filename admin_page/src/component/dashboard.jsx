@@ -48,7 +48,7 @@ export default function AppSidebarLayout() {
     { title: "Dashboard", url: "/admin", icon: Home },
     { title: "Students", url: "student", icon: Inbox },
     { title: "Student Registration", url: "std_register", icon: UserPlus },
-    { title: "Maintenance", url: "/maintenance", icon: Settings },
+    { title: "Maintenance", url: "maintenance", icon: Settings },
   ];
 
   const [admin, setAdmin] = useState("");

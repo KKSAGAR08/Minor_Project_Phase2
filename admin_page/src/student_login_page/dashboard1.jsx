@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link,useOutletContext } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import axios from "axios";
+import { Link} from "react-router-dom";
 import {
   Home,
   Inbox,
@@ -39,7 +40,64 @@ import {
 
 function Dashboard1() {
   const [isavailable, setIsavailable] = useState(true);
-  const { studentData } = useOutletContext();
+  const [studentData, setStudentData] = useState("");
+  const [roomateData, setRoomateData] = useState([]);
+  const [pendingComplaint,setPendingComplaint] = useState(0);
+
+  useEffect(() => {
+    async function fetchStudentDetails() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+          "http://localhost:3000/student_dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setStudentData(response.data);
+      } catch (error) {
+        console.error("Error fetching student:", error);
+      }
+    }
+    fetchStudentDetails();
+  }, []);
+
+
+
+  useEffect(() => {
+    async function fetchStudentRoomate() {
+      try {
+
+        const response = await axios.post(
+          "http://localhost:3000/student_roommates",{usn:studentData.usn});
+        setRoomateData(response.data);
+
+      } catch (error) {
+        console.error("Error fetching student:", error);
+      }
+    }
+    fetchStudentRoomate();
+  }, [studentData]);
+
+  useEffect(() => {
+    async function countPendingComplaints() {
+      try {
+
+        const response = await axios.post(
+          "http://localhost:3000/count_pending_complaints",{usn:studentData.usn});
+          
+        setPendingComplaint(response.data.count);
+
+      } catch (error) {
+        console.error("Error fetching student:", error);
+      }
+    }
+    countPendingComplaints();
+  }, [studentData]);
+
 
   const messMenu = {
     today: "Thursday",
@@ -50,11 +108,9 @@ function Dashboard1() {
     },
   };
 
-  const roomMates = [
-    {name:"Suhas",mobileno:9876543211},
-    {name:"Tejas",mobileno:9876543211},
-  ]
+ 
 
+  console.log(roomateData)
 
   return (
     <>
@@ -78,7 +134,7 @@ function Dashboard1() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">{pendingComplaint}</div>
             <p className="text-xs text-muted-foreground">
               1 Completed Complaints, 2 In Progress Complaints, 1 Pending
               Complaints
@@ -129,7 +185,7 @@ function Dashboard1() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Room Number</label>
-                <p className="text-lg font-semibold">300</p>
+                <p className="text-lg font-semibold">{studentData.room_no}</p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Block</label>
@@ -141,17 +197,17 @@ function Dashboard1() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Room Type</label>
-                <p className="text-lg font-semibold">Double Sharing</p>
+                <p className="text-lg font-semibold">{roomateData[0].room_type} Sharing</p>
               </div>
             </div>
             <Separator/>
             <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Roommate's</h3>
                 <div className="grid gap-4 md:grid-cols-3">
-                    { roomMates.map((request)=>(
+                    { roomateData.map((request)=>(
                     <span>
-                      <p className="font-medium">{request.name}</p>
-                      <p className="text-sm text-muted-foreground">{request.mobileno}</p>
+                      <p className="font-medium">{request.roommate_name}</p>
+                      <p className="text-sm text-muted-foreground">{request.student_mobile_no}</p>
                     </span>
                     ))
                     }

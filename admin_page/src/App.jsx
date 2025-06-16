@@ -11,6 +11,8 @@ import StdLeaveApplication from "./student_login_page/leaveapplication.jsx"
 import StdLoginPage from "./authentication_folder/std_login_page.jsx"
 import AdminLoginPage from "./authentication_folder/admin_login_page.jsx"
 import NewStudentRegistration from "./component/student_registration.jsx"
+import AdminComplaint from "./component/complaints.jsx"
+import HomePage from "./homePage.jsx"
 
 // Uncomment or add more as needed
 // import PaymentsContent from "./PaymentsContent";
@@ -21,12 +23,14 @@ export default function Routing_page() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<HomePage />}></Route>
         <Route path="/stdlogin" element={<StdLoginPage />}></Route>
         <Route path="/adminlogin" element={<AdminLoginPage />}></Route>
         <Route path="/admin" element={<AppSidebarLayout />}>
           <Route index element={<DashboardContent />} />
           <Route path="student" element={<Student />} />
           <Route path="std_register" element={<NewStudentRegistration />} />
+          <Route path="maintenance" element={<AdminComplaint />} />
         </Route>
         <Route path="/student" element={<StudentDashboard/>}>
           <Route index element={<StdDashboard />} />
