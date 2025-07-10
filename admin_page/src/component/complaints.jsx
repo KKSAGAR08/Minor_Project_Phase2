@@ -29,21 +29,22 @@ function ComplaintsContent() {
           "http://localhost:3000/admin_complaint"
         );
 
-        console.log(response.data);
+        const complaintsData = response.data.complaints; // 👈 updated to access nested "complaints" key
 
-        setComplaints(
-          response.data.map((c) => ({
-            id: c.id,
-            usn: c.usn,
-            title: c.title,
-            room: c.room_no,
-            student: c.student_name,
-            date: new Date(c.date).toISOString().slice(0, 10), // converts to 'YYYY-MM-DD'
-            status: c.status,
-            category: c.category,
-            description: c.description,
-          }))
-        );
+      setComplaints(
+        complaintsData.map((c) => ({
+          id: c.id,
+          usn: c.usn,
+          title: c.title,
+          room: c.room_no,
+          student: c.student_name,
+          date: new Date(c.date).toISOString().slice(0, 10),
+          status: c.status,
+          category: c.category,
+          description: c.description,
+        }))
+      );
+      
       } catch (error) {
         alert("Error in Fetching data: " + error.response.data.message);
       }

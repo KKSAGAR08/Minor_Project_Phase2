@@ -29,7 +29,7 @@ export default function Component() {
           </div>
 
           <nav className="flex items-center space-x-8">
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
+            {/* <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
               Features
             </a>
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
@@ -37,8 +37,11 @@ export default function Component() {
             </a>
             <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
               Testimonial
-            </a>
-            <Button variant="outline" className="border-blue-500 text-blue-500 hover:bg-blue-50">
+            </a> */}
+            <Button
+              onClick={handleAdminClick}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 text-lg font-medium rounded-lg cursor-pointer"
+            >
               Admin
             </Button>
           </nav>
@@ -51,7 +54,7 @@ export default function Component() {
           {/* Hero Section */}
           <div className="mb-12">
             <h1 className="text-6xl font-bold text-blue-500 mb-6 leading-tight">Hostel Management System</h1>
-            <p className="text-xl text-gray-600 leading-relaxed max-w-2xl">
+            <p className="text-xl text-gray-600 leading-relaxed max-w-2xl ">
               All-in-one solution for managing your hostel operations. Streamline bookings, payments, and guest
               management with our intuitive platform.
             </p>
@@ -61,14 +64,14 @@ export default function Component() {
           <div className="flex space-x-4">
             <Button
               onClick={handleAdminClick}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 text-lg font-medium rounded-lg"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 text-lg font-medium rounded-lg cursor-pointer"
             >
               Admin
             </Button>
             <Button
               onClick={handleStudentClick}
               variant="outline"
-              className="border-blue-500 text-blue-500 hover:bg-blue-50 px-8 py-3 text-lg font-medium rounded-lg"
+              className="border-blue-500 text-blue-500 hover:bg-blue-50 px-8 py-3 text-lg font-medium rounded-lg cursor-pointer"
             >
               Student
             </Button>

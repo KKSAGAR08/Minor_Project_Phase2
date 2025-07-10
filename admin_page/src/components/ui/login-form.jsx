@@ -73,7 +73,7 @@ export function LoginForm({ className, ...props }) {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="phoneno">Your date of birth</Label>
+              <Label htmlFor="phoneno">Your Phone no</Label>
               <Input
                 id="phoneno"
                 type="number"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -27,8 +28,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Student() {
   const [studentRecord, setStudentRecord] = useState([]);
@@ -47,6 +57,19 @@ export default function Student() {
     fetchStudentRecord();
   }, []);
 
+const handleDelete = async (usn) => {
+  try {
+    const response = await axios.post("http://localhost:3000/delete_student", { usn });
+
+    alert(response.data.message); 
+
+    setStudentRecord((prev) => prev.filter((std) => std.usn !== usn));
+  } catch (error) {
+    alert("Error deleting student: " + (error.response?.data?.message || error.message));
+  }
+};
+
+
   return (
     <div className="w-full max-w-full">
       <Tabs defaultValue="account" className="w-full">
@@ -61,7 +84,7 @@ export default function Student() {
             <div className="hidden md:block">USN</div>
             <div className="hidden md:block">Phone NO</div>
             <div className="hidden md:block">Email</div>
-            <div>Edit</div>
+            <div>View</div>
             <div>Delete</div>
           </div>
           {studentRecord.map((std, index) => (
@@ -86,7 +109,7 @@ export default function Student() {
                 <Dialog>
                   <DialogTrigger>
                     <Button className="cursor-pointer" variant="outline">
-                      Edit
+                      View
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -133,169 +156,178 @@ export default function Student() {
                 </Dialog>
               </span>
               <span>
-                <Button className="cursor-pointer" variant="destructive">
-                  Delete
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="cursor-pointer">
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your account and remove your data from our
+                        servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(std.usn)}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </span>
             </div>
           ))}
         </TabsContent>
         <TabsContent value="password" className="w-full">
           <div className="grid  md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="hover:scale-102 hover:bg-gray-100 hover:shadow-2xl cursor-pointer">
-            <CardHeader>
-              <CardTitle>
-                <div className="flex justify-center"><p className="text-2xl font-bold">100</p></div>
-              </CardTitle>
-              <CardDescription className=" flex justify-center"><span>Room Type: Single Room</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-            <div className="flex justify-between text-base text-muted-foreground">
-              <div>K K Sagar</div>
-              <div>2SD22CS039</div>
-            </div>
-            <div className="flex justify-between text-base text-muted-foreground">
-              <div>K K Sagar</div>
-              <div>2SD22CS039</div>
-            </div>
-            <div className="flex justify-between text-base text-muted-foreground">
-              <div>K K Sagar</div>
-              <div>2SD22CS039</div>
-            </div>
-              <p className="text-xs text-muted-foreground flex gap-4 mt-5">
-                    ** discription about the room members **
-              </p>
-            </CardContent>
-          </Card>
-         <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-                    
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
-          <Card >
-            <CardHeader>
-              <CardTitle>Card Title</CardTitle>
-              <CardDescription><span>Card Description</span></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground flex gap-4">
-                    <div>
-                      K K Sagar
-                    </div>
-                    <div>
-                      2SD22CS039
-                    </div>
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="hover:scale-102 hover:bg-gray-100 hover:shadow-2xl cursor-pointer">
+              <CardHeader>
+                <CardTitle>
+                  <div className="flex justify-center">
+                    <p className="text-2xl font-bold">100</p>
+                  </div>
+                </CardTitle>
+                <CardDescription className=" flex justify-center">
+                  <span>Room Type: Single Room</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between text-base text-muted-foreground">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </div>
+                <div className="flex justify-between text-base text-muted-foreground">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </div>
+                <div className="flex justify-between text-base text-muted-foreground">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </div>
+                <p className="text-xs text-muted-foreground flex gap-4 mt-5">
+                  ** discription about the room members **
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Title</CardTitle>
+                <CardDescription>
+                  <span>Card Description</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground flex gap-4">
+                  <div>K K Sagar</div>
+                  <div>2SD22CS039</div>
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>

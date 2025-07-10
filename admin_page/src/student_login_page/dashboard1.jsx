@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Home,
   Inbox,
@@ -42,7 +42,7 @@ function Dashboard1() {
   const [isavailable, setIsavailable] = useState(true);
   const [studentData, setStudentData] = useState("");
   const [roomateData, setRoomateData] = useState([]);
-  const [pendingComplaint,setPendingComplaint] = useState(0);
+  const [pendingComplaint, setPendingComplaint] = useState(0);
 
   useEffect(() => {
     async function fetchStudentDetails() {
@@ -65,16 +65,14 @@ function Dashboard1() {
     fetchStudentDetails();
   }, []);
 
-
-
   useEffect(() => {
     async function fetchStudentRoomate() {
       try {
-
         const response = await axios.post(
-          "http://localhost:3000/student_roommates",{usn:studentData.usn});
+          "http://localhost:3000/student_roommates",
+          { usn: studentData.usn }
+        );
         setRoomateData(response.data);
-
       } catch (error) {
         console.error("Error fetching student:", error);
       }
@@ -85,19 +83,18 @@ function Dashboard1() {
   useEffect(() => {
     async function countPendingComplaints() {
       try {
-
         const response = await axios.post(
-          "http://localhost:3000/count_pending_complaints",{usn:studentData.usn});
-          
-        setPendingComplaint(response.data.count);
+          "http://localhost:3000/count_pending_complaints",
+          { usn: studentData.usn }
+        );
 
+        setPendingComplaint(response.data.count);
       } catch (error) {
         console.error("Error fetching student:", error);
       }
     }
     countPendingComplaints();
   }, [studentData]);
-
 
   const messMenu = {
     today: "Thursday",
@@ -108,9 +105,7 @@ function Dashboard1() {
     },
   };
 
- 
-
-  console.log(roomateData)
+  console.log(roomateData);
 
   return (
     <>
@@ -197,21 +192,26 @@ function Dashboard1() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Room Type</label>
-                <p className="text-lg font-semibold">{roomateData[0].room_type} Sharing</p>
+                <p className="text-lg font-semibold">
+                  {roomateData.length > 0
+                    ? `${roomateData[0].room_type} Sharing`
+                    : "Loading..."}
+                </p>
               </div>
             </div>
-            <Separator/>
+            <Separator />
             <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Roommate's</h3>
-                <div className="grid gap-4 md:grid-cols-3">
-                    { roomateData.map((request)=>(
-                    <span>
-                      <p className="font-medium">{request.roommate_name}</p>
-                      <p className="text-sm text-muted-foreground">{request.student_mobile_no}</p>
-                    </span>
-                    ))
-                    }
-                </div>
+              <h3 className="text-lg font-semibold">Roommate's</h3>
+              <div className="grid gap-4 md:grid-cols-3">
+                {roomateData.map((request) => (
+                  <span>
+                    <p className="font-medium">{request.roommate_name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {request.student_mobile_no}
+                    </p>
+                  </span>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>

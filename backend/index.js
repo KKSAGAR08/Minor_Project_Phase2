@@ -2,8 +2,7 @@ import express, { json } from "express";
 import pg from "pg";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import rateLimit from 'express-rate-limit';
-
+import rateLimit from "express-rate-limit";
 
 const app = express();
 const port = 3000;
@@ -21,7 +20,6 @@ const db = new pg.Client({
 
 db.connect();
 
-
 // // Apply to all requests
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -30,8 +28,6 @@ db.connect();
 // });
 
 // app.use(limiter); // apply rate limiter to all routes
-
-
 
 // // Limit JSON payload to 10 KB
 // app.use(express.json({ limit: '10kb' }));
@@ -182,26 +178,23 @@ async function addingNewStudent(req, res, next) {
       return res.status(400).json({ message: "Room not found" });
     }
 
-    
-
     if (room.rows[0].occupied === true) {
       return res.status(400).json({ message: "Room already occupied" });
     } else {
       var roommembercount = parseInt(room.rows[0].no_occupance);
       roommembercount = roommembercount + 1;
 
-        const response = await db.query(
-          "UPDATE rooms_details SET no_occupance = $1 WHERE room_no = $2",
-          [roommembercount, roomNo]
-        );
+      const response = await db.query(
+        "UPDATE rooms_details SET no_occupance = $1 WHERE room_no = $2",
+        [roommembercount, roomNo]
+      );
 
-        if(roommembercount === room.rows[0].total_occupancy){
-          await db.query(
+      if (roommembercount === room.rows[0].total_occupancy) {
+        await db.query(
           "UPDATE rooms_details SET occupied = $1 WHERE room_no = $2",
           [true, roomNo]
         );
-
-      } 
+      }
     }
 
     next();
@@ -226,101 +219,102 @@ app.post("/new_student_register", addingNewStudent, async (req, res) => {
     roomNo,
   } = req.body;
 
-
   try {
-    const query = await db.query("INSERT INTO student_details (usn,room_no,student_name,student_email,student_father_name,student_mother_name,permanent_address,student_mobile_no,dob,gender) VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9,$10);",[usn,roomNo,stdname,stdemail,stdfathername,stdmothername,address,stdmobileno,dob,gender]);
-
-    res.json({ message:"New Student added successfully" });
-
-  }
-
-  catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-
-  });
-
-
-  app.get("/admin_complaint", async (req, res) => {
-  
-
-  try {
-    const stdData = await db.query(
-      "SELECT e.*, s.student_name FROM complaints e, student_details s WHERE e.usn = s.usn;"
+    const query = await db.query(
+      "INSERT INTO student_details (usn,room_no,student_name,student_email,student_father_name,student_mother_name,permanent_address,student_mobile_no,dob,gender) VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9,$10);",
+      [
+        usn,
+        roomNo,
+        stdname,
+        stdemail,
+        stdfathername,
+        stdmothername,
+        address,
+        stdmobileno,
+        dob,
+        gender,
+      ]
     );
 
-    return res.json(stdData.rows);
+    res.json({ message: "New Student added successfully" });
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.put("/update_complaint_status",async(req,res) =>{
+app.get("/admin_complaint", async (req, res) => {
+  try {
+    const complaintData = await db.query(
+      `SELECT e.*, s.student_name 
+       FROM complaints e 
+       JOIN student_details s ON e.usn = s.usn`
+    );
 
-  const {complaint_id,complaint_status} = req.body;
+    // Get total complaint count
+    const pendingCountData = await db.query(
+      `SELECT COUNT(*) FROM complaints WHERE status != 'Completed'`
+    );
 
-  try{
-    await db.query("UPDATE complaints SET status = $1 WHERE id = $2", [complaint_status, complaint_id]);
-    res.json({ message: "Complaint status updated successfully" });
-  }
-  catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to update complaint" });
-  }
+    return res.json({
+      complaints: complaintData.rows,
+      totalCount: parseInt(pendingCountData.rows[0].count),
+    });
 
-
-})
-
-app.delete("/delete_complaint",async(req,res)=>{
-  const {complaint_id} = req.body;
-
-  console.log(complaint_id)
-
-  try{
-    await db.query("DELETE FROM complaints WHERE id = $1", [complaint_id]);
-    res.json({ message: "Complaint deleted successfully" });
-
-  }
-  catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to delete complaint" });
-  }
-
-
-})
-
-app.post('/add_student_complaint',async(req,res)=>{
-  const {
-    usn,
-    roomno,
-    title,
-    category,
-    description,
-    status,
-    date,
-  } = req.body;
-
-  console.log(category)
-
-
-  try {  
-    const query = await db.query("INSERT INTO complaints (usn,room_no,title,description,category,status,date) VALUES ($1, $2, $3, $4, $5, $6, $7);",[usn,roomno,title,description,category,status,date]);
-
-    res.json({ message: "Complaint Inserted successfully" });
-
-  }
-
-  catch (err) {
+  } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+app.put("/update_complaint_status", async (req, res) => {
+  const { complaint_id, complaint_status } = req.body;
 
+  try {
+    await db.query("UPDATE complaints SET status = $1 WHERE id = $2", [
+      complaint_status,
+      complaint_id,
+    ]);
+    res.json({ message: "Complaint status updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update complaint" });
+  }
+});
 
-app.post('/student_complaint_details', async (req, res) => {
+app.delete("/delete_complaint", async (req, res) => {
+  const { complaint_id } = req.body;
+
+  console.log(complaint_id);
+
+  try {
+    await db.query("DELETE FROM complaints WHERE id = $1", [complaint_id]);
+    res.json({ message: "Complaint deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete complaint" });
+  }
+});
+
+app.post("/add_student_complaint", async (req, res) => {
+  const { usn, roomno, title, category, description, status, date } = req.body;
+
+  console.log(category);
+
+  try {
+    const query = await db.query(
+      "INSERT INTO complaints (usn,room_no,title,description,category,status,date) VALUES ($1, $2, $3, $4, $5, $6, $7);",
+      [usn, roomno, title, description, category, status, date]
+    );
+
+    res.json({ message: "Complaint Inserted successfully" });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.post("/student_complaint_details", async (req, res) => {
   const { usn } = req.body;
 
   try {
@@ -329,7 +323,6 @@ app.post('/student_complaint_details', async (req, res) => {
       [usn]
     );
 
-
     return res.json(query.rows); // assuming you're using pg and not mysql
   } catch (err) {
     console.error("Database error:", err);
@@ -337,9 +330,7 @@ app.post('/student_complaint_details', async (req, res) => {
   }
 });
 
-
-
-app.post('/student_roommates', async (req, res) => {
+app.post("/student_roommates", async (req, res) => {
   const { usn } = req.body;
 
   try {
@@ -370,8 +361,7 @@ app.post('/student_roommates', async (req, res) => {
   }
 });
 
-
-app.post('/count_pending_complaints', async (req, res) => {
+app.post("/count_pending_complaints", async (req, res) => {
   const { usn } = req.body;
 
   if (!usn) {
@@ -380,8 +370,8 @@ app.post('/count_pending_complaints', async (req, res) => {
 
   try {
     const result = await db.query(
-      'SELECT COUNT(*) FROM complaints WHERE usn = $1 AND status != $2',
-      [usn, 'Completed']
+      "SELECT COUNT(*) FROM complaints WHERE usn = $1 AND status != $2",
+      [usn, "Completed"]
     );
 
     res.json({ count: parseInt(result.rows[0].count) });
@@ -392,7 +382,28 @@ app.post('/count_pending_complaints', async (req, res) => {
 });
 
 
- 
+app.post("/delete_student", async (req, res) => {
+  const { usn } = req.body;
+  console.log(usn)
+
+
+  try {
+    const result = await db.query("DELETE FROM student_details WHERE usn = $1", [usn]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.status(200).json({ message: "Student deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting student:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+
+
 
 
 app.listen(port, () => {
