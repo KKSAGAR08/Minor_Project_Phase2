@@ -11,10 +11,10 @@ app.use(express.json());
 const JWT_SECRET = "mySuperSecretKey123";
 
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "Hostel_management",
-  password: "a",
+  user: "hostel_management_daaf_user",
+  host: "dpg-d1qh59gdl3ps738u23pg-a.singapore-postgres.render.com",
+  database: "hostel_management_daaf",
+  password: "TLaty2NHHIOZ9zT4VmsGuPOFKJ1Vxxye",
   port: 5432,
 });
 
