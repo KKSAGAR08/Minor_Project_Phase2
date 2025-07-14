@@ -16,6 +16,9 @@ const db = new pg.Client({
   database: "hostel_management_daaf",
   password: "TLaty2NHHIOZ9zT4VmsGuPOFKJ1Vxxye",
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 db.connect();
