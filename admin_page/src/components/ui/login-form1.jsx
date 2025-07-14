@@ -25,7 +25,7 @@ export function LoginForm({ className, ...props }) {
       console.log(payload);
 
       const response = await axios.post(
-        "http://localhost:3000/admin_login",
+        "https://minor-project-phase2.onrender.com/admin_login",
         payload
       );
 
