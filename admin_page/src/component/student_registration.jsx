@@ -43,7 +43,7 @@ function NewRegister() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/new_student_register",
+        "https://minor-project-phase2.onrender.com/new_student_register",
         payload
       );
 
