@@ -26,7 +26,7 @@ function ComplaintsContent() {
     async function fetchComplaint() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/admin_complaint"
+          "https://minor-project-phase2.onrender.com/admin_complaint"
         );
 
         const complaintsData = response.data.complaints; // 👈 updated to access nested "complaints" key
@@ -64,7 +64,7 @@ function ComplaintsContent() {
 
     try {
       const response = await axios.put(
-        "http://localhost:3000/update_complaint_status",
+        "https://minor-project-phase2.onrender.com/update_complaint_status",
         payload
       );
 
@@ -90,7 +90,7 @@ function ComplaintsContent() {
 
     try{
     const response = await axios.delete(
-        "http://localhost:3000/delete_complaint",
+        "https://minor-project-phase2.onrender.com/delete_complaint",
         { data: payload }
       );
 
