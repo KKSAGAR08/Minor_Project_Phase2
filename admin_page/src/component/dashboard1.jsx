@@ -71,7 +71,7 @@ function Dashboard1() {
   useEffect(() => {
     async function countStudent() {
       try {
-        const res = await fetch("http://localhost:3000/admin_dashboard");
+        const res = await fetch("https://minor-project-phase2.onrender.com/admin_dashboard");
         const data = await res.json();
         setStudentsCount(data.data);
       } catch (err) {
@@ -85,7 +85,7 @@ function Dashboard1() {
   useEffect(() => {
     async function roomDetails() {
       try {
-        const res = await fetch("http://localhost:3000/room_status");
+        const res = await fetch("https://minor-project-phase2.onrender.com/room_status");
         const { occupied_rooms, total_rooms } = await res.json();
         setOccupiedRooms(occupied_rooms);
         setTotalRooms(total_rooms);
@@ -101,7 +101,7 @@ function Dashboard1() {
     async function fetchComplaint() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/admin_complaint"
+          "https://minor-project-phase2.onrender.com/admin_complaint"
         );
 
         const complaintsData = response.data.complaints; // 👈 updated to access nested "complaints" key
