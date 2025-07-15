@@ -43,7 +43,7 @@ function StdComplaints() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:3000/student_dashboard",
+          "https://minor-project-phase2.onrender.com/student_dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ function StdComplaints() {
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/student_complaint_details",
+          "https://minor-project-phase2.onrender.com/student_complaint_details",
           { usn: studentData.usn }
         );
 
@@ -100,7 +100,7 @@ function StdComplaints() {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/add_student_complaint",
+        "https://minor-project-phase2.onrender.com/add_student_complaint",
         newComplaint
       );
 
@@ -113,7 +113,7 @@ function StdComplaints() {
 
       // Refetch complaints after submitting
       const refresh = await axios.post(
-        "http://localhost:3000/student_complaint_details",
+        "https://minor-project-phase2.onrender.com/student_complaint_details",
         { usn: studentData.usn }
       );
 
