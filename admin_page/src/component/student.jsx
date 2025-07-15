@@ -46,7 +46,7 @@ export default function Student() {
   useEffect(() => {
     async function fetchStudentRecord() {
       try {
-        const res = await fetch("http://localhost:3000/student_details");
+        const res = await fetch("https://minor-project-phase2.onrender.com/student_details");
         const data = await res.json();
         setStudentRecord(data.student_record);
       } catch (err) {
@@ -59,7 +59,7 @@ export default function Student() {
 
 const handleDelete = async (usn) => {
   try {
-    const response = await axios.post("http://localhost:3000/delete_student", { usn });
+    const response = await axios.post("https://minor-project-phase2.onrender.com/delete_student", { usn });
 
     alert(response.data.message); 
 
