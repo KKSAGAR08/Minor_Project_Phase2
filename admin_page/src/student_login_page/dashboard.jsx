@@ -95,7 +95,7 @@ export default function AppSidebarLayout() {
         }
 
         const response = await axios.get(
-          "http://localhost:3000/student_dashboard",
+          "https://minor-project-phase2.onrender.com/student_dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,
