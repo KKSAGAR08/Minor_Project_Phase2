@@ -50,7 +50,7 @@ function Dashboard1() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "http://localhost:3000/student_dashboard",
+          "https://minor-project-phase2.onrender.com/student_dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ function Dashboard1() {
     async function fetchStudentRoomate() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/student_roommates",
+          "https://minor-project-phase2.onrender.com/student_roommates",
           { usn: studentData.usn }
         );
         setRoomateData(response.data);
@@ -84,7 +84,7 @@ function Dashboard1() {
     async function countPendingComplaints() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/count_pending_complaints",
+          "https://minor-project-phase2.onrender.com/count_pending_complaints",
           { usn: studentData.usn }
         );
 
