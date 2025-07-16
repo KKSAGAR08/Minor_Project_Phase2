@@ -161,7 +161,21 @@ app.get("/student_dashboard", tokenAuthentication, async (req, res) => {
       [usn]
     );
 
-    return res.json(stdData.rows[0]);
+    const availability = await db.query(`
+      SELECT isavailable 
+      FROM student_attendence
+      WHERE serial_no = (
+      SELECT serial_no 
+      FROM student_attendence 
+      WHERE usn = $1 
+      ORDER BY serial_no DESC 
+      LIMIT 1
+      );
+      `,[usn])
+
+    return res.json({studentDetails:stdData.rows[0],
+                    availability:availability.rows[0]
+  });
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -404,6 +418,58 @@ app.post("/delete_student", async (req, res) => {
   }
 });
 
+app.post("/student_checkout", async (req, res) => {
+  const { usn, roomno, checkOutDate, expCheckinDate, reason } = req.body;
+
+  try {
+    const result = await db.query(
+      "INSERT INTO student_attendence(usn,roomno,checkoutdate,expcheckindate,reason,isavailable) VALUES ($1,$2,$3,$4,$5,$6);",
+      [usn, roomno, checkOutDate, expCheckinDate, reason, false]
+    );
+
+    
+
+    res.json({ message: "Checkout Successfull" });
+  } catch (err) {
+    console.error("Error Inserting value:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.post("/student_checkin", async (req, res) => {
+  const { usn, roomno, checkInDate, time, addReason } = req.body;
+
+  try {
+
+    const check = await db.query('SELECT isavailable FROM student_attendence WHERE serial_no = (SELECT serial_no FROM student_attendence WHERE usn = $1 AND roomno = $2 ORDER BY serial_no DESC LIMIT 1);',[usn,roomno]);
+
+    if (check.rowCount === 0 || check.rows[0].isavailable === true) {
+      return res.status(400).json({ message: "You have not checked out yet" });
+    }
+
+    const result = await db.query(
+        `UPDATE student_attendence
+         SET checkindate = $1,
+         checkintime = $2,
+         addtionalreason = $3,
+         isavailable = $4
+         WHERE serial_no = (
+         SELECT serial_no
+         FROM student_attendence
+         WHERE usn = $5 AND roomno = $6
+         ORDER BY serial_no DESC
+         LIMIT 1
+        );`,[checkInDate,time,addReason,true,usn,roomno]
+    );
+
+    res.json({ message: "Checkin Successfull" });
+
+
+  } catch (err) {
+    console.error("Error Inserting value:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 
