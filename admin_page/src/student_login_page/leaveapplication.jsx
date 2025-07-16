@@ -40,7 +40,7 @@ function Leaveapplication() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "http://localhost:3000/student_dashboard",
+          "https://minor-project-phase2.onrender.com/student_dashboard",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ function Leaveapplication() {
       checkOutDate,expCheckinDate,reason
     }
 
-    const response = await axios.post('http://localhost:3000/student_checkout',checkoutDetails);
+    const response = await axios.post('https://minor-project-phase2.onrender.com/student_checkout',checkoutDetails);
 
     alert('Your checkout is stored successfully ',response.data.message);
 
@@ -92,7 +92,7 @@ function Leaveapplication() {
       checkInDate,time,addReason
     }
 
-    const response = await axios.post('http://localhost:3000/student_checkin',checkinDetails);
+    const response = await axios.post('https://minor-project-phase2.onrender.com/student_checkin',checkinDetails);
 
     setAddReason('');
     setTime('');
