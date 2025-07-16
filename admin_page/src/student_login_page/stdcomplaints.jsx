@@ -50,7 +50,7 @@ function StdComplaints() {
             },
           }
         );
-        setStudentData(response.data);
+        setStudentData(response.data.studentDetails);
       } catch (error) {
         console.error("Error fetching student:", error);
       }
