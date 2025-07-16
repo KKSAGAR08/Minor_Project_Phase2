@@ -197,7 +197,7 @@ function Dashboard1() {
                 <p className="text-lg font-semibold">
                   {roomateData.length > 0
                     ? `${roomateData[0].room_type} Sharing`
-                    : "Loading..."}
+                    : "Single Room"}
                 </p>
               </div>
             </div>
