@@ -57,7 +57,8 @@ function Dashboard1() {
             },
           }
         );
-        setStudentData(response.data);
+        setStudentData(response.data.studentDetails);
+        setIsavailable(response.data.availability.isavailable)
       } catch (error) {
         console.error("Error fetching student:", error);
       }
