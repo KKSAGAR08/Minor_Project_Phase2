@@ -81,6 +81,8 @@ function Dashboard1() {
     fetchStudentRoomate();
   }, [studentData]);
 
+  console.log(roomateData);
+
   useEffect(() => {
     async function countPendingComplaints() {
       try {
@@ -106,7 +108,6 @@ function Dashboard1() {
     },
   };
 
-  console.log(roomateData);
 
   return (
     <>
