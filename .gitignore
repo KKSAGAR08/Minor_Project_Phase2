@@ -1,0 +1,23 @@
+# Environment files
+.env
+backend/.env
+admin_page/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+backend/hostel_management_system/.env
+
+# Node / React
+admin_page/node_modules/
+admin_page/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
